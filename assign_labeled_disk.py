@@ -3,13 +3,12 @@ import win32api
 import win32file
 
 
-def get_drives_labels(lowered=True):
+def get_drives_labels():
     drives = win32api.GetLogicalDriveStrings()
     used_drive_letters = {}
     for drive_letter in drives.split('\000')[:-1]:
         drive_letter = drive_letter.lower()
-        drive_name = win32api.GetVolumeInformation(drive_letter)[0]
-        used_drive_letters[drive_letter[0]] = drive_name.lower() if lowered else drive_name
+        used_drive_letters[drive_letter[0]] = win32api.GetVolumeInformation(drive_letter)[0].lower()
     return used_drive_letters
 
 
@@ -62,4 +61,5 @@ if __name__ == '__main__':
     parser.add_argument('label', help='drive label')
     parser.add_argument('letter', help='new drive letter')
     args = parser.parse_args()
-    assign_letter_by_label(args.label, args.letter)
+    if assign_letter_by_label(args.label, args.letter):
+        print(f'Letter {args.letter.upper()}:\\ has been sucessfuly assigned to disk "{args.label}"')
