@@ -23,8 +23,8 @@ def get_drives_labels(lowered=True):
 
 
 def assign_drive_letter(remap_from, remap_to):
-    remap_from_ = remap_from.lower() + ':\\'
-    remap_to_ = remap_to.lower() + ':\\'
+    remap_from_ = f'{remap_from.lower()}:\\'
+    remap_to_ = f'{remap_to.lower()}:\\'
     print(f'Remapping from {remap_from_} to {remap_to_}')
     volume_name = win32file.GetVolumeNameForVolumeMountPoint(remap_from_)
     win32file.DeleteVolumeMountPoint(remap_from_)
