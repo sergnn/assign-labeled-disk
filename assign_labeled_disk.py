@@ -30,17 +30,17 @@ def assign_letter_by_label(label, letter):
         return False
 
     if letter_ in drives and drives[letter_] == label_:
-        print(f'Disk "{label}" already assigned to {letter}:\\')
+        print(f'Disk "{label}" already assigned to {letter.upper()}:\\')
         return True
 
     elif letter_ in drives:
-        print(f'Letter {letter}:\\ already assigned to disk "{drives[letter_]}"')
+        print(f'Letter {letter.upper()}:\\ already assigned to disk "{drives[letter_]}"')
         mounted_volume = win32file.GetVolumeNameForVolumeMountPoint(f'{letter_}:\\')
-        win32file.DeleteVolumeMountPoint('{}:\\'.format(letter_))
+        win32file.DeleteVolumeMountPoint(f'{letter_}:\\')
 
         new_volume_letter = sorted(char_range('c', 'z') - set(drives.keys()))[0]
 
-        print(f'Remapping partition {mounted_volume} to {new_volume_letter}:\\')
+        print(f'Remapping partition {mounted_volume} to {new_volume_letter.upper()}:\\')
         win32file.SetVolumeMountPoint(f'{new_volume_letter}:\\', mounted_volume)
 
     elif search_drive:
@@ -48,7 +48,7 @@ def assign_letter_by_label(label, letter):
 
     remap_from_ = f'{search_drive}:\\'
     remap_to_ = f'{letter_}:\\'
-    print(f'Remapping from {remap_from_} to {remap_to_}')
+    print(f'Remapping from {remap_from_.upper()} to {remap_to_.upper()}')
     volume_name = win32file.GetVolumeNameForVolumeMountPoint(remap_from_)
     win32file.DeleteVolumeMountPoint(remap_from_)
     win32file.SetVolumeMountPoint(remap_to_, volume_name)
@@ -63,3 +63,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if assign_letter_by_label(args.label, args.letter):
         print(f'Letter {args.letter.upper()}:\\ has been sucessfuly assigned to disk "{args.label}"')
+    else:
+        exit(1)
