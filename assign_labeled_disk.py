@@ -1,15 +1,6 @@
 import argparse
-import ctypes
-import sys
 import win32api
 import win32file
-
-
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
 
 
 def get_drives_labels(lowered=True):
@@ -74,13 +65,8 @@ def assign_letter_by_label(label, letter):
 
 
 if __name__ == '__main__':
-    if is_admin():
-        parser = argparse.ArgumentParser(description='Remaps labeled disk to selected letter')
-        parser.add_argument('label', help='drive label')
-        parser.add_argument('letter', help='new drive letter')
-        args = parser.parse_args()
-        assign_letter_by_label(args.label, args.letter)
-    else:
-        # Re-run the program with admin rights
-        print('Run with admin rights.')
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    parser = argparse.ArgumentParser(description='Remaps labeled disk to selected letter')
+    parser.add_argument('label', help='drive label')
+    parser.add_argument('letter', help='new drive letter')
+    args = parser.parse_args()
+    assign_letter_by_label(args.label, args.letter)
