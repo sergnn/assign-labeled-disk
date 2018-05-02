@@ -25,7 +25,7 @@ def get_drives_labels(lowered=True):
 def assign_drive_letter(remap_from, remap_to):
     remap_from_ = remap_from.lower() + ':\\'
     remap_to_ = remap_to.lower() + ':\\'
-    print('Remapping from {} to {}'.format(remap_from_, remap_to_))
+    print(f'Remapping from {remap_from_} to {remap_to_}')
     volume_name = win32file.GetVolumeNameForVolumeMountPoint(remap_from_)
     win32file.DeleteVolumeMountPoint(remap_from_)
     win32file.SetVolumeMountPoint(remap_to_, volume_name)
@@ -49,25 +49,25 @@ def assign_letter_by_label(label, letter):
     if label_ in drives.values():
         search_drive = list(drives.keys())[list(drives.values()).index(label_)]
     else:
-        print('Disk {} not found.'.format(label))
+        print(f'Disk {label} not found.')
         return False
 
     if letter_ in drives and drives[letter_] == label_:
-        print('Disk {} already assigned to {}:'.format(label, letter))
+        print(f'Disk {label} already assigned to {letter}:\\')
         return True
 
     elif letter_ in drives:
-        print('Letter {}: already assigned to disk {}'.format(letter, drives[letter_]))
-        mounted_volume = win32file.GetVolumeNameForVolumeMountPoint('{}:\\'.format(letter_))
+        print(f'Letter {letter}:\\ already assigned to disk {drives[letter_]}')
+        mounted_volume = win32file.GetVolumeNameForVolumeMountPoint(f'{letter_}:\\')
         win32file.DeleteVolumeMountPoint('{}:\\'.format(letter_))
 
         new_volume_letter = sorted(char_range('c', 'z') - set(drives.keys()))[0]
 
-        print('Remapping partition {} to {}'.format(mounted_volume, new_volume_letter))
-        win32file.SetVolumeMountPoint(new_volume_letter + ':\\', mounted_volume)
+        print(f'Remapping partition {mounted_volume} to {new_volume_letter}:\\')
+        win32file.SetVolumeMountPoint(f'{new_volume_letter}:\\', mounted_volume)
 
     elif search_drive:
-        print('Disk {} found as drive {}:\\'.format(label, search_drive.upper()))
+        print(f'Disk {label} found as drive {search_drive.upper()}:\\')
 
     assign_drive_letter(search_drive, letter_)
     return True
@@ -84,4 +84,3 @@ if __name__ == '__main__':
         # Re-run the program with admin rights
         print('Run with admin rights.')
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-
