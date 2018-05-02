@@ -13,22 +13,9 @@ def get_drives_labels(lowered=True):
     return used_drive_letters
 
 
-def assign_drive_letter(remap_from, remap_to):
-    remap_from_ = f'{remap_from.lower()}:\\'
-    remap_to_ = f'{remap_to.lower()}:\\'
-    print(f'Remapping from {remap_from_} to {remap_to_}')
-    volume_name = win32file.GetVolumeNameForVolumeMountPoint(remap_from_)
-    win32file.DeleteVolumeMountPoint(remap_from_)
-    win32file.SetVolumeMountPoint(remap_to_, volume_name)
-
-
 def char_range(from_char, to_char):
     """Generates the characters from `from_char` to `to_char`, inclusive."""
-    try:
-        xrange
-    except NameError:
-        xrange = range
-    return {chr(c) for c in xrange(ord(from_char), ord(to_char) + 1)}
+    return {chr(c) for c in range(ord(from_char), ord(to_char) + 1)}
 
 
 def assign_letter_by_label(label, letter):
@@ -40,15 +27,15 @@ def assign_letter_by_label(label, letter):
     if label_ in drives.values():
         search_drive = list(drives.keys())[list(drives.values()).index(label_)]
     else:
-        print(f'Disk {label} not found.')
+        print(f'Disk "{label}" not found.')
         return False
 
     if letter_ in drives and drives[letter_] == label_:
-        print(f'Disk {label} already assigned to {letter}:\\')
+        print(f'Disk "{label}" already assigned to {letter}:\\')
         return True
 
     elif letter_ in drives:
-        print(f'Letter {letter}:\\ already assigned to disk {drives[letter_]}')
+        print(f'Letter {letter}:\\ already assigned to disk "{drives[letter_]}"')
         mounted_volume = win32file.GetVolumeNameForVolumeMountPoint(f'{letter_}:\\')
         win32file.DeleteVolumeMountPoint('{}:\\'.format(letter_))
 
@@ -58,9 +45,15 @@ def assign_letter_by_label(label, letter):
         win32file.SetVolumeMountPoint(f'{new_volume_letter}:\\', mounted_volume)
 
     elif search_drive:
-        print(f'Disk {label} found as drive {search_drive.upper()}:\\')
+        print(f'Disk "{label}" found as drive {search_drive.upper()}:\\')
 
-    assign_drive_letter(search_drive, letter_)
+    remap_from_ = f'{search_drive}:\\'
+    remap_to_ = f'{letter_}:\\'
+    print(f'Remapping from {remap_from_} to {remap_to_}')
+    volume_name = win32file.GetVolumeNameForVolumeMountPoint(remap_from_)
+    win32file.DeleteVolumeMountPoint(remap_from_)
+    win32file.SetVolumeMountPoint(remap_to_, volume_name)
+
     return True
 
 
