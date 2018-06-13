@@ -8,7 +8,10 @@ def get_drives_labels():
     used_drive_letters = {}
     for drive_letter in drives.split('\000')[:-1]:
         drive_letter = drive_letter.lower()
-        used_drive_letters[drive_letter[0]] = win32api.GetVolumeInformation(drive_letter)[0].lower()
+        try:
+            used_drive_letters[drive_letter[0]] = win32api.GetVolumeInformation(drive_letter)[0].lower()
+        except win32api.error:
+            pass
     return used_drive_letters
 
 
