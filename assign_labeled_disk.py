@@ -1,4 +1,5 @@
 import argparse
+import sys
 import win32api
 import win32file
 
@@ -67,4 +68,4 @@ if __name__ == '__main__':
     if assign_letter_by_label(args.label, args.letter):
         print(f'Letter {args.letter.upper()}:\\ has been sucessfuly assigned to disk "{args.label}"')
     else:
-        exit(1)
+        sys.exit(1)
